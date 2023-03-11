@@ -32,5 +32,5 @@ ln -s $(pwd)/nautilus_hotkeys/NautilusHotkeys.py ~/.local/share/nautilus-python/
 ### 3) Restart Nautilus
 
 ```
-`killall nautilus`
+killall nautilus
 ```
