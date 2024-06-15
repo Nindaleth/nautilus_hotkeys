@@ -29,7 +29,7 @@ mkdir -p ~/.local/share/nautilus-python/extensions/
 ln -s $(pwd)/nautilus_hotkeys/NautilusHotkeys.py ~/.local/share/nautilus-python/extensions/
 ```
 
-### 3) Restart Nautilus
+3. Restart Nautilus
 
 ```
 killall nautilus
