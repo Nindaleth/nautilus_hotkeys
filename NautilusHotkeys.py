@@ -12,15 +12,32 @@
 #
 
 import gi
+import subprocess
 from gi.repository import GObject, Gtk, GLib
 gi.require_version("Gtk", "4.0")
 
 
+def get_gnome_version():
+    try:
+        output = subprocess.check_output(["gnome-shell", "--version"], universal_newlines=True)
+        version_str = output.strip().split()[-1]
+        version = int(version_str.split('.')[0])
+        return version
+    except:
+        return -1
+
+
 def idle_callback(*args):
     app = Gtk.Application.get_default()
-    app.set_accels_for_action("win.up", ["BackSpace", "<alt>Up"])
-    app.set_accels_for_action("win.tab-previous", ["<shift><control>Tab", "<control>Page_Up"])
-    app.set_accels_for_action("win.tab-next", ["<control>Tab", "<control>Page_Down"])
+    gnome_version = get_gnome_version()
+    if gnome_version >= 47:
+        action = "slot.up"
+    else:
+        app.set_accels_for_action("win.tab-previous", ["<shift><control>Tab", "<control>Page_Up"])
+        app.set_accels_for_action("win.tab-next", ["<control>Tab", "<control>Page_Down"])
+        action = "win.up"
+    app.set_accels_for_action(action, ["BackSpace", "<alt>Up"])
+
     return False
 
 
@@ -30,7 +47,13 @@ def window_added(*args):
 
 class NautilusHotkeys(GObject.GObject):
     app = Gtk.Application.get_default()
-    app.set_accels_for_action("win.up", ["BackSpace", "<alt>Up"])
-    app.set_accels_for_action("win.tab-previous", ["<shift><control>Tab", "<control>Page_Up"])
-    app.set_accels_for_action("win.tab-next", ["<control>Tab", "<control>Page_Down"])
+    gnome_version = get_gnome_version()
+    if gnome_version >= 47:
+        action = "slot.up"
+    else:
+        app.set_accels_for_action("win.tab-previous", ["<shift><control>Tab", "<control>Page_Up"])
+        app.set_accels_for_action("win.tab-next", ["<control>Tab", "<control>Page_Down"])
+        action = "win.up"
+    app.set_accels_for_action(action, ["BackSpace", "<alt>Up"])
     app.connect("window-added", window_added)
+    print('NautilusHotkeys: running')
